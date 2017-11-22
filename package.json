@@ -4,7 +4,7 @@
   "description": "This is a Workshot about Api Testing in JavasScript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -t 5000"
+    "test": "mocha -t 5000 --reporter mochawesome --reporter-options reportDir=report,reportFilename=ApiTesting"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "http-status-codes": "^1.3.0",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "mochawesome": "^2.3.1"
   },
   "dependencies": {
     "superagent": "^3.8.1",
