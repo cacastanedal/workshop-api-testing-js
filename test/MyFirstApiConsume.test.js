@@ -1,13 +1,7 @@
 const agent = require('superagent-promise')(require('superagent'), Promise);
 const statusCode = require('http-status-codes');
 
-const dirtyChai = require('dirty-chai');
-
 const { expect } = require('chai');
-
-const chai = require('chai');
-
-chai.use(dirtyChai);
 
 describe('First Api Tests', () => {
   it('Consume GET Service', () => agent.get('https://httpbin.org/ip').then((response) => {
@@ -50,8 +44,8 @@ describe('First Api Tests', () => {
     .head('https://httpbin.org/')
     .then((response) => {
       expect(response.status).to.equal(statusCode.OK);
-      expect(response.body).to.be.empty();
-      expect(response.headers).to.not.be.empty();
+      expect(response.body).to.be.empty;
+      expect(response.headers).to.not.be.empty;
     }));
 
   it('Consume PATCH Service', () => {
