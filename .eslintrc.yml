@@ -10,7 +10,6 @@ extends:
 
 rules: {
   "comma-dangle": ["error", "never"],
-  "no-unused-expressions": 0,
-  "linebreak-style": ["error", "windows"]
+  "no-unused-expressions": 0
 }
 
