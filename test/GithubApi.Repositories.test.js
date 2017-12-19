@@ -12,7 +12,6 @@ const urlBase = 'https://api.github.com';
 describe('Get request to github API with the user aperdomob', () => {
   let user;
 
-  // Before runing the test case "it"
   before(() => {
     const userQuery = agent.get(`${urlBase}/users/aperdomob`)
       .auth('token', process.env.ACCESS_TOKEN)
@@ -35,11 +34,9 @@ describe('Get request to github API with the user aperdomob', () => {
     let repository;
 
     before(() => {
-      // user.repos_url is a hypermedia direction
       const repoQuery = agent.get(user.repos_url)
         .auth('token', process.env.ACCESS_TOKEN)
         .then((response) => {
-          // From all repositories select the one with name === repositoryName
           repository = response.body.find(repo => repo.name === repositoryName);
         });
 
