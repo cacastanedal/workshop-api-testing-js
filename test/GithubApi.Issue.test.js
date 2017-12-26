@@ -38,5 +38,25 @@ describe('Getting user info', () => {
     it(`the repository ${repoName} exist`, () => {
       assert.exists(repository);
     });
+
+    describe('Creating an issue for repo with user', () => {
+      let issue;
+
+      const issueTitle = 'Title for issue through api post';
+      const paramPost = { title: issueTitle };
+      before(() => {
+        const issueQuery = agent.post(`${urlBase}/repos/${user.login}/${repoName}/issues`, paramPost)
+          .auth('token', process.env.ACCESS_TOKEN)
+          .then((response) => {
+            issue = response.body;
+          });
+        return issueQuery;
+      });
+
+      it('the issue has title and but no body', () => {
+        expect(issue.title).to.equal(issueTitle);
+        expect(issue.body).to.be.null;
+      });
+    });
   });
 });
