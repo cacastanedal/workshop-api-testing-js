@@ -57,6 +57,28 @@ describe('Getting user info', () => {
         expect(issue.title).to.equal(issueTitle);
         expect(issue.body).to.be.null;
       });
+
+      describe('Modifying a existing issue', () => {
+        let modifyIssue;
+
+        const body = 'The program which actualize the start date failed';
+        const paramPatch = { body };
+
+        before(() => {
+          const issueModificationQuery = agent.patch(`${urlBase}/repos/${user.login}/${repoName}/issues/${issue.number}`, paramPatch)
+            .auth('token', process.env.ACCESS_TOKEN)
+            .then((response) => {
+              modifyIssue = response.body;
+            });
+
+          return issueModificationQuery;
+        });
+
+        it('the issue should have change', () => {
+          expect(modifyIssue.title).to.equal(issue.title);
+          expect(modifyIssue.body).to.equal(body);
+        });
+      });
     });
   });
 });
