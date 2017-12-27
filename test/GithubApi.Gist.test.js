@@ -14,22 +14,19 @@ describe('Creating a gist', () => {
   let responseStatus;
   let gistUrl;
 
-  const gistDescription = 'This is a description example for a gists';
-  const isPublic = true;
-  const gistfiles = {
-    'file1.txt': {
-      content: 'String file contents'
-    }
-  };
-
   const postParams = {
-    description: gistDescription,
-    public: isPublic,
-    files: gistfiles
+    description: 'This is a description example for a gists',
+    public: true,
+    files: {
+      'file1.txt': {
+        content: 'String file contents'
+      }
+    }
   };
 
   before(() => {
     const gistQuery = agent.post(`${urlBase}/gists`, postParams)
+      .auth('token', process.env.ACCESS_TOKEN)
       .then((response) => {
         gist = response.body;
         responseStatus = response.status;
@@ -41,10 +38,10 @@ describe('Creating a gist', () => {
 
   it('gist should have description, content and be public', () => {
     expect(responseStatus).to.equal(statusCode.CREATED);
-    expect(gist.files['file1.txt'].content).to.equal(gistfiles['file1.txt'].content);
+    expect(gist.files['file1.txt'].content).to.equal(postParams.files['file1.txt'].content);
     expect(gist).to.containSubset({
-      description: gistDescription,
-      public: isPublic
+      description: postParams.description,
+      public: true
     });
   });
 
@@ -52,6 +49,7 @@ describe('Creating a gist', () => {
     let gistMirror;
     before(() => {
       const gistGetQuery = agent.get(gistUrl)
+        .auth('token', process.env.ACCESS_TOKEN)
         .then((response) => {
           gistMirror = response.body;
         });
@@ -60,6 +58,35 @@ describe('Creating a gist', () => {
 
     it('the gist consulted exist', () => {
       assert.exists(gistMirror);
+    });
+
+    describe('Deleting gist', () => {
+      let gistDeleted;
+      let deleteResponse;
+
+      before(() => {
+        const gistDelQuery = agent.del(gistUrl)
+          .auth('token', process.env.ACCESS_TOKEN)
+          .then((response) => {
+            gistDeleted = response.body;
+            deleteResponse = response.status;
+          });
+        return gistDelQuery;
+      });
+      it('the gist should be errased', () => {
+        expect(deleteResponse).to.equal(statusCode.NO_CONTENT);
+        expect(gistDeleted).to.be.empty;
+      });
+
+      describe('Trying to get the deleted gist', () => {
+        it('gist not found', () => {
+          agent.get(gistUrl)
+            .auth('token', process.env.ACCESS_TOKEN)
+            .catch((response) => {
+              expect(response.status).to.equal(statusCode.NOT_FOUND);
+            });
+        });
+      });
     });
   });
 });
