@@ -23,4 +23,15 @@ describe('Trying to get url with Head request', () => {
     expect(headRequestStatus).to.equal(statusCode.MOVED_PERMANENTLY);
     expect(redirectionUrl).to.equal(newURL);
   });
+
+  describe('Going to the redirect url', () => {
+    it('should get the redirected', () => {
+      agent.get(redirectUrl)
+        .auth('token', process.env.ACCESS_TOKEN)
+        .then((response) => {
+          expect(response.status).to.equal(statusCode.OK);
+          expect(response.redirects.length).to.be.above(0);
+        });
+    });
+  });
 });
