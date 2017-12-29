@@ -26,4 +26,19 @@ describe('Getting all users from github api', () => {
     expect(statusRequest).to.be.equal(statusCode.OK);
     expect(queryTime).to.be.below(5000);
   });
+
+  [10, 50].forEach((number) => {
+    describe(`Get just ${number} users`, () => {
+      it(`github answer should have ${number} objects`, () => {
+        agent
+          .get(`${urlBase}/users`)
+          .auth('token', process.env.ACCESS_TOKEN)
+          .query({ per_page: number })
+          .then((response) => {
+            expect(response.body.length).to.equal(number);
+          });
+      });
+    });
+  });
 });
+
