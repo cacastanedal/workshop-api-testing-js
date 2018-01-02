@@ -26,4 +26,27 @@ describe('Getting all users from github api', () => {
     expect(statusRequest).to.be.equal(statusCode.OK);
     expect(queryTime).to.be.below(5000);
   });
+
+  describe('Get just 10 users', () => {
+    it('github answer should have 10 objects', () => {
+      agent.get(`${urlBase}/users`)
+        .auth('token', process.env.ACCESS_TOKEN)
+        .query({ per_page: 10 })
+        .then((response) => {
+          expect(response.body.length).to.equal(10);
+        });
+    });
+  });
+
+  describe('Get just 50 users', () => {
+    it('github answer should have 50 objects', () => {
+      agent.get(`${urlBase}/users`)
+        .auth('token', process.env.ACCESS_TOKEN)
+        .query({ per_page: 50 })
+        .then((response) => {
+          expect(response.body.length).to.equal(50);
+        });
+    });
+  });
 });
+
