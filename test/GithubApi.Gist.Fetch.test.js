@@ -34,9 +34,9 @@ describe('Creating a gist through Isomorphic-fetch', () => {
     }).then((response) => {
       responseStatus = response.status;
       return response.json();
-    }).then((gistCreated) => {
-      gist = gistCreated;
-      gistUrl = gistCreated.url;
+    }).then((jsonResponse) => {
+      gist = jsonResponse;
+      gistUrl = jsonResponse.url;
     });
 
     return gistQuery;
@@ -59,8 +59,8 @@ describe('Creating a gist through Isomorphic-fetch', () => {
         headers: {
           Authorization: `token ${process.env.ACCESS_TOKEN}`
         }
-      }).then(response => response.json()).then((body) => {
-        gistMirror = body;
+      }).then(response => response.json()).then((jsonResponse) => {
+        gistMirror = jsonResponse;
       });
       return gistGetQuery;
     });
@@ -68,35 +68,37 @@ describe('Creating a gist through Isomorphic-fetch', () => {
     it('the gist consulted exist', () => {
       assert.exists(gistMirror);
     });
-  /*
+
     describe('Deleting gist', () => {
-      let gistDeleted;
       let deleteResponse;
 
       before(() => {
-        const gistDelQuery = agent.del(gistUrl)
-          .auth('token', process.env.ACCESS_TOKEN)
-          .then((response) => {
-            gistDeleted = response.body;
-            deleteResponse = response.status;
-          });
+        const gistDelQuery = fetch(gistUrl, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `token ${process.env.ACCESS_TOKEN}`
+          }
+        }).then((response) => {
+          deleteResponse = response.status;
+        });
         return gistDelQuery;
       });
       it('the gist should be errased', () => {
         expect(deleteResponse).to.equal(statusCode.NO_CONTENT);
-        expect(gistDeleted).to.be.empty;
       });
 
       describe('Trying to get the deleted gist', () => {
         it('gist not found', () => {
-          agent.get(gistUrl)
-            .auth('token', process.env.ACCESS_TOKEN)
-            .catch((response) => {
-              expect(response.status).to.equal(statusCode.NOT_FOUND);
-            });
+          fetch(gistUrl, {
+            method: 'Get',
+            headers: {
+              Authorization: `token ${process.env.ACCESS_TOKEN}`
+            }
+          }).then((response) => {
+            expect(response.status).to.equal(statusCode.NOT_FOUND);
+          });
         });
       });
     });
-  */
   });
 });
