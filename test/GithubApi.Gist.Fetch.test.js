@@ -1,6 +1,5 @@
 const fetch = require('isomorphic-fetch');
-// const { expect, assert } = require('chai');
-const { expect } = require('chai');
+const { expect, assert } = require('chai');
 const statusCode = require('http-status-codes');
 
 const chaiSubset = require('chai-subset');
@@ -13,7 +12,7 @@ chai.use(chaiSubset);
 describe('Creating a gist through Isomorphic-fetch', () => {
   let gist;
   let responseStatus;
-  // let gistUrl;
+  let gistUrl;
 
   const postParams = {
     description: 'This is a description example for a gists',
@@ -37,7 +36,7 @@ describe('Creating a gist through Isomorphic-fetch', () => {
       return response.json();
     }).then((gistCreated) => {
       gist = gistCreated;
-      // gistUrl = response.body.url;
+      gistUrl = gistCreated.url;
     });
 
     return gistQuery;
@@ -52,22 +51,24 @@ describe('Creating a gist through Isomorphic-fetch', () => {
     });
   });
 
-  /*
   describe('Consulting gist through hipermedia', () => {
     let gistMirror;
     before(() => {
-      const gistGetQuery = agent.get(gistUrl)
-        .auth('token', process.env.ACCESS_TOKEN)
-        .then((response) => {
-          gistMirror = response.body;
-        });
+      const gistGetQuery = fetch(gistUrl, {
+        method: 'Get',
+        headers: {
+          Authorization: `token ${process.env.ACCESS_TOKEN}`
+        }
+      }).then(response => response.json()).then((body) => {
+        gistMirror = body;
+      });
       return gistGetQuery;
     });
 
     it('the gist consulted exist', () => {
       assert.exists(gistMirror);
     });
-
+  /*
     describe('Deleting gist', () => {
       let gistDeleted;
       let deleteResponse;
@@ -96,6 +97,6 @@ describe('Creating a gist through Isomorphic-fetch', () => {
         });
       });
     });
-  });
   */
+  });
 });
